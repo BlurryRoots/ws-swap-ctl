@@ -1,0 +1,25 @@
+#!/bin/bash
+
+source $WS_CFG_PATH/ws-shared
+
+main () {
+	_ws_log verbose "Checking if swap-ctl is installed ..."
+	
+	local exit_code=0	
+	if which swap-ctl > /dev/null; then
+		swap-ctl status 2>&1 > /dev/null
+		if [ 1 -lt $? ]; then
+			_ws_log error "Could not call 'swap-ctl status'."
+
+			exit_code=13
+		fi
+	else
+		_ws_log error "Could not find 'swap-ctl'. Installtion of sawp-ctl seems corrupted."
+
+		exit_code=13
+	fi
+
+	return exit_code
+}
+
+main $*
